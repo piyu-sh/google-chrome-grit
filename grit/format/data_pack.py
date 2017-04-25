@@ -205,14 +205,38 @@ def main():
     data = ReadDataPack(sys.argv[1])
     print data.encoding
     for (resource_id, text) in data.resources.iteritems():
-      print '%s: %s' % (resource_id, text)
+      file = open(str(resource_id), "wb")
+      file.write(text)
   else:
     # Just write a simple file.
-    data = {1: '', 4: 'this is id 4', 6: 'this is id 6', 10: ''}
-    WriteDataPack(data, 'datapack1.pak', UTF8)
-    data2 = {1000: 'test', 5: 'five'}
-    WriteDataPack(data2, 'datapack2.pak', UTF8)
-    print 'wrote datapack1 and datapack2 to current directory.'
+    # data = {1: '', 4: 'this is id 4', 6: 'this is id 6', 10: ''}
+    # WriteDataPack(data, 'datapack1.pak', UTF8)
+    # data2 = {1000: 'test', 5: 'five'}
+    # WriteDataPack(data2, 'datapack2.pak', UTF8)
+    # print 'wrote datapack1 and datapack2 to current directory.'
+
+    # Read in the modified icon resource files
+    file = open('27665', 'r')
+    file1 = file.read()
+    file.close()
+
+    # Write resource pak of only notification icons
+    iconData = {27665: file1}
+    WriteDataPack(iconData, 'tmp.pak', BINARY)
+
+    # Create copy of original pak without notification icons
+    dataPack = ReadDataPack('resources.pak')
+    # List of icon resources to remove
+    toRemove = set([27665])
+    whiteList = set(dataPack.resources.keys()).difference(toRemove)
+    whiteListFile = open('whitelist.txt', 'w')
+    for i in whiteList:
+      whiteListFile.write(str(i)+'\n')
+    whiteListFile.close()
+    newDataPack = RePack('tmp2.pak', ['resources.pak'], 'whitelist.txt')
+
+    # Merge the two paks together
+    combinedPack = RePack('resources_new.pak', ['tmp2.pak', 'tmp.pak'], None)
 
 
 if __name__ == '__main__':
