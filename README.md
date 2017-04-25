@@ -12,3 +12,8 @@ commits.
 
 updated data-pack to unpack repack chrome .pak files after editing selected files
 
+
+used following answer 
+https://askubuntu.com/questions/470691/how-can-i-replace-google-chromes-low-resolution-notification-icon
+
+to add certain css in text_defaults.css to make chrome:page urls darker
